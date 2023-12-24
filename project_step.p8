@@ -23,7 +23,8 @@ player={
         falling=false,
         sliding=false,
         landed=false,
-        wallsliding=false
+        wallsliding=false,
+        frontface=false
     }
     gravity=0.3
 				friction=0.85
@@ -110,6 +111,8 @@ function player_update()
   player.dy+=gravity
   player.dx*=friction
 
+
+
   --physics for wall sliding
 if player.wallsliding and player.falling then 
     if  btn(➡️) or btn(⬅️) then 
@@ -120,6 +123,17 @@ else
     
 end
   --controls
+
+
+   --up button code
+   --⬆️
+   if btn(⬆️)  then
+    player.frontface=true
+        end
+if not btn(⬆️) then
+  player.frontface=false
+
+   end
   if btn(⬅️) then
     player.dx-=player.acc
     player.running=true
@@ -133,6 +147,8 @@ end
       
   end
   end
+ 
+
   if btn(➡️) then
     player.dx+=player.acc
     player.running=true
@@ -247,6 +263,8 @@ end
 function player_animate()
   if player.jumping then
     player.sp=7
+  elseif player.frontface then
+  player.sp=11
   elseif player.falling then
     if (player.wallsliding) then
       player.sp=10
@@ -272,6 +290,7 @@ function player_animate()
       end
     end
   end
+
 end
 
 function limit_speed(num,maximum)
