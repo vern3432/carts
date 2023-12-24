@@ -149,7 +149,7 @@ function player_update()
 
     if collide_map(player,"down",0) then
       player.landed=true
-      player.gravity=.3
+      gravity=.3
       player.falling=false
       player.dy=0
       player.y-=((player.y+player.h+1)%8)-1
@@ -206,14 +206,14 @@ if collide_map(player,"left",3) and btn(⬅️) then
     player.flp=false
   end
     player.wallsliding=true
-  player.gravity=.001
+  gravity=.1
 end
 if collide_map(player,"right",3) and btn(➡️) then
   if not player.flp and player.falling then 
     player.flp=true
   end
   player.wallsliding=true
-   player.gravity=.001
+   gravity=.1
 
 end
 
@@ -227,7 +227,6 @@ function player_animate()
   elseif player.falling then
     if (player.wallsliding) then
       player.sp=10
-      player.gravity=.14
       else
         player.sp=8
     end
