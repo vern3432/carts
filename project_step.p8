@@ -360,7 +360,7 @@ function shoot()
 add(buls,{
 		x=player.x+(3)*aim,
 		y=player.y,
-		spd=1*aim,
+		spd=player.dx+1*(aim),
 		distance=0,
 		sprite=13,
 		collision=false
