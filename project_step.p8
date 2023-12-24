@@ -110,6 +110,15 @@ function player_update()
   player.dy+=gravity
   player.dx*=friction
 
+  --physics for wall sliding
+if player.wallsliding and player.falling then 
+    if  btn(➡️) or btn(⬅️) then 
+    gravity=.07
+else
+  gravity=.3
+    end
+    
+end
   --controls
   if btn(⬅️) then
     player.dx-=player.acc
@@ -206,14 +215,12 @@ if collide_map(player,"left",3) and btn(⬅️) then
     player.flp=false
   end
     player.wallsliding=true
-  gravity=.1
 end
 if collide_map(player,"right",3) and btn(➡️) then
   if not player.flp and player.falling then 
     player.flp=true
   end
   player.wallsliding=true
-   gravity=.1
 
 end
 
