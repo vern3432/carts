@@ -113,7 +113,7 @@ function player_update()
   --physics for wall sliding
 if player.wallsliding and player.falling then 
     if  btn(➡️) or btn(⬅️) then 
-    gravity=.07
+    gravity=.03
 else
   gravity=.3
     end
@@ -124,11 +124,30 @@ end
     player.dx-=player.acc
     player.running=true
     player.flp=true
+    --wall sliding while moving directionally
+    if player.wallsliding and player.falling then 
+      if  btn(➡️) or btn(⬅️) then 
+      gravity=.03
+  else
+    gravity=.3
+      end
+      
   end
+  end
+  
   if btn(➡️) then
     player.dx+=player.acc
     player.running=true
     player.flp=false
+        --wall sliding while moving directionally
+    if player.wallsliding and player.falling then 
+      if  btn(➡️) or btn(⬅️) then 
+      gravity=.03
+  else
+    gravity=.3
+      end
+      
+  end
   end
 
   --slide
