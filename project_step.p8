@@ -255,12 +255,20 @@ if not btn(⬆️) then
   end
 --wall sliding collision detection
 if collide_map(player,"left",3) and btn(⬅️) then
+  if player.jumping then 
+    player.dy=0
+
+  end 
   if player.flp and player.falling then 
     player.flp=false
   end
     player.wallsliding=true
 end
 if collide_map(player,"right",3) and btn(➡️) then
+  if player.jumping then 
+    player.dy=0
+
+  end 
   if not player.flp and player.falling then 
     player.flp=true
   end
