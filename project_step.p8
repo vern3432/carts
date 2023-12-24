@@ -2,6 +2,9 @@ pico-8 cartridge // http://www.pico-8.com
 version 41
 __lua__
 --variables--
+
+---need to add counter for frames when jumping off walls, will make less janky, should actually make it pretty good
+
 --comment added
 function _init()
 player={
