@@ -187,6 +187,7 @@ if not btn(⬆️) then
   if player.landed or player.wallsliding then
     player.dy-=player.boost
     player.landed=false
+    player.wallsliding=false
     gravity=.3
   end
   end
@@ -278,6 +279,7 @@ function player_animate()
   player.sp=11
   elseif player.falling then
     if (player.wallsliding) then
+      gravity=.05
       player.sp=10
       else
         player.sp=8
