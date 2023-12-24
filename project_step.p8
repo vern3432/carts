@@ -183,10 +183,12 @@ if not btn(⬆️) then
   end
 
   --jump
-  if btnp(❎)
-  and player.landed then
+  if btnp(❎) then 
+  if player.landed or player.wallsliding then
     player.dy-=player.boost
     player.landed=false
+    gravity=.3
+  end
   end
 
   --check collision up and down
