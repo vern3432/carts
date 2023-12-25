@@ -428,7 +428,6 @@ function voldman()
   
     if collide_map(oldman,"down",0) then
       oldman.landed=true
-      gravity=.3
       oldman.falling=false
       oldman.dy=0
       oldman.y-=((oldman.y+oldman.h+1)%8)-1
