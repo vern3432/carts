@@ -134,7 +134,7 @@ end
   --controls
 
 if btn(🅾️) and player.ninjastarstatus>7 then 
-shoot()
+      shoot()
 end
 
 if btn(⬇️) then 
@@ -390,21 +390,89 @@ end
 -->8
 --npc handling
 function ioldman()
-				oldman={
+				oldman= {
 				sp=18,
 				x=50,
-				x=50
-				
-				}
+				y=40,
+				w=8,
+        h=8,
+        flp=false,
+        sx=0,
+        dx=0,
+        dy=0,
+        max_dx=2,
+        max_dy=3,
+        acc=0.5,
+        boost=4,
+        anim=0,
+        running=false,
+        jumping=false,
+        falling=false,
+        sliding=false,
+        landed=false
+			
+      }
 end
 
 function voldman()
+  oldman.dy+=gravity
+  oldman.dx*=friction
+
+  
+  if oldman.dy>0 then
+    oldman.falling=true
+    oldman.landed=false
+    oldman.jumping=false
+  
+    oldman.dy=limit_speed(oldman.dy,oldman.max_dy)
+  
+    if collide_map(oldman,"down",0) then
+      oldman.landed=true
+      gravity=.3
+      oldman.falling=false
+      oldman.dy=0
+      oldman.y-=((oldman.y+oldman.h+1)%8)-1
+      oldman.wallsliding=false
+  
+    end
+  elseif oldman.dy<0 then
+    oldman.jumping=true
+    if collide_map(oldman,"up",1) then
+      oldman.dy=0
+    end
+  end
+  oldman.x+=oldman.dx
+  oldman.y+=oldman.dy
+
+
+  
 end
 
+ninjastarstatus=8
+
+function animate_oldman()
+ 
+  for i=1,10,1
+  do
+  if not collide_map(oldman,"right",3) then 
+      oldman.running=true
+      oldman.x+=.08
+      oldman.sx+=1
+    if oldman.sx>2 then 
+      oldman.sx=0
+    end 
+    oldman.sp=19+oldman.sx
+      end  
+   end     
+end
 
 function doldman()
-		spr(oldman.sp,oldman.x,oldman.y)
+spr(oldman.sp,oldman.x,oldman.y)
+animate_oldman()
 end
+
+
+
 __gfx__
 00000000004444400044444000044444000444440004444400044444c0044444c004444400000000044444000044444000000050000000000000000000000000
 0000000000ccccc000ccccc0c0ccccccc0ccccccc0ccccccc0cccccc0ccccccc0ccccccc044444000ccccc0000ccccc056660560000000000000000000000600
