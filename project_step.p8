@@ -1,41 +1,42 @@
 pico-8 cartridge // http://www.pico-8.com
 version 41
 __lua__
+
 --variables--
 --comment added
 function _init()
-player={
-        sp=1,
-        x=53,
-        y=40,
-        w=8,
-        h=8,
-        flp=false,
-        dx=0,
-        dy=0,
-        max_dx=2,
-        max_dy=3,
-        acc=0.5,
-        boost=4,
-        anim=0,
-        running=false,
-        jumping=false,
-        falling=false,
-        sliding=false,
-        landed=false,
-        wallsliding=false,
-        frontface=false,
-        ninjastarstatus=8
-    }
-    gravity=0.3
-				friction=0.85
-				
+  player = {
+    sp = 1,
+    x = 53,
+    y = 40,
+    w = 8,
+    h = 8,
+    flp = false,
+    dx = 0,
+    dy = 0,
+    max_dx = 2,
+    max_dy = 3,
+    acc = 0.5,
+    boost = 4,
+    anim = 0,
+    running = false,
+    jumping = false,
+    falling = false,
+    sliding = false,
+    landed = false,
+    wallsliding = false,
+    frontface = false,
+    ninjastarstatus = 8
+  }
+  gravity = 0.3
+  friction = 0.85
+
   --simple camera
-  cam_x=0
+  cam_x = 0
 
   --map limits
-  map_start=0
-  map_end=1024
+  map_start = 0
+  map_end = 1024
   --project initiallzation
   ibullets()
   ioldman()
@@ -48,429 +49,416 @@ function _update()
   player_animate()
 
   --simple camera
-  cam_x=player.x-64+(player.w/2)
-  if cam_x<map_start then
-     cam_x=map_start
+  cam_x = player.x - 64 + player.w / 2
+  if cam_x < map_start then
+    cam_x = map_start
   end
-  if cam_x>map_end-128 then
-     cam_x=map_end-128
+  if cam_x > map_end - 128 then
+    cam_x = map_end - 128
   end
-  camera(cam_x,0)
+  camera(cam_x, 0)
   ubullets()
   voldman()
-
 end
 
 function _draw()
   cls()
-  map(0,0)
-  spr(player.sp,player.x,player.y,1,1,player.flp)
-		dbullets()
-		doldman()
+  map(0, 0)
+  spr(player.sp, player.x, player.y, 1, 1, player.flp)
+  dbullets()
+  doldman()
 end
 
 -->8
 --collisions
-function collide_map(obj,aim,flag)
- --obj = table needs x,y,w,h
- --aim = left,right,up,down
+function collide_map(obj, aim, flag)
+  --obj = table needs x,y,w,h
+  --aim = left,right,up,down
 
- local x=obj.x  local y=obj.y
- local w=obj.w  local h=obj.h
+  local x = obj.x
+  local y = obj.y
+  local w = obj.w
+  local h = obj.h
 
- local x1=0	 local y1=0
- local x2=0  local y2=0
+  local x1 = 0
+  local y1 = 0
+  local x2 = 0
+  local y2 = 0
 
- if aim=="left" then
-   x1=x-1  y1=y
-   x2=x    y2=y+h-1
+  if aim == "left" then
+    x1 = x - 1 y1 = y
+    x2 = x y2 = y + h - 1
+  elseif aim == "right" then
+    x1 = x + w - 1 y1 = y
+    x2 = x + w y2 = y + h - 1
+  elseif aim == "up" then
+    x1 = x + 2 y1 = y - 1
+    x2 = x + w - 3 y2 = y
+  elseif aim == "down" then
+    x1 = x + 2 y1 = y + h
+    x2 = x + w - 3 y2 = y + h
+  end
 
- elseif aim=="right" then
-   x1=x+w-1    y1=y
-   x2=x+w  y2=y+h-1
+  --pixels to tiles
+  x1 /= 8
+  y1 /= 8
+  x2 /= 8
+  y2 /= 8
 
- elseif aim=="up" then
-   x1=x+2    y1=y-1
-   x2=x+w-3  y2=y
-
- elseif aim=="down" then
-   x1=x+2      y1=y+h
-   x2=x+w-3    y2=y+h
- end
-
- --pixels to tiles
- x1/=8    y1/=8
- x2/=8    y2/=8
-
- if fget(mget(x1,y1), flag)
- or fget(mget(x1,y2), flag)
- or fget(mget(x2,y1), flag)
- or fget(mget(x2,y2), flag) then
-   return true
- else
-   return false
- end
-
+  if fget(mget(x1, y1), flag)
+      or fget(mget(x1, y2), flag)
+      or fget(mget(x2, y1), flag)
+      or fget(mget(x2, y2), flag) then
+    return true
+  else
+    return false
+  end
 end
 
 -->8
 --player functions
 function player_update()
   --physics
-  player.dy+=gravity
-  player.dx*=friction
-
-
+  player.dy += gravity
+  player.dx *= friction
 
   --physics for wall sliding
-if player.wallsliding and player.falling then 
-    if  btn(➡️) or btn(⬅️) then 
-    gravity=.03
-else
-  gravity=.3
+  if player.wallsliding and player.falling then
+    if btn(➡️) or btn(⬅️) then
+      gravity = .03
+    else
+      gravity = .3
     end
-    
-end
+  end
   --controls
 
-if btn(🅾️) and player.ninjastarstatus>7 then 
-      shoot()
-end
+  if btn(🅾️) and player.ninjastarstatus > 7 then
+    shoot()
+  end
 
-if btn(⬇️) then 
-		player.sp=17
-end
+  if btn(⬇️) then
+    player.sp = 17
+  end
 
-   --up button code
-   --⬆️
-   if btn(⬆️)  then
-    player.frontface=true
-        end
-if not btn(⬆️) then
-  player.frontface=false
-
-   end
+  --up button code
+  --⬆️
+  if btn(⬆️) then
+    player.frontface = true
+  end
+  if not btn(⬆️) then
+    player.frontface = false
+  end
   if btn(⬅️) then
-    player.dx-=player.acc
-    player.running=true
-    player.flp=true
-    if player.wallsliding and player.falling then 
-      if  btn(➡️) or btn(⬅️) then 
-      gravity=.03
-  else
-    gravity=.3
+    player.dx -= player.acc
+    player.running = true
+    player.flp = true
+    if player.wallsliding and player.falling then
+      if btn(➡️) or btn(⬅️) then
+        gravity = .03
+      else
+        gravity = .3
       end
-      
+    end
   end
-  end
- 
 
   if btn(➡️) then
-    player.dx+=player.acc
-    player.running=true
-    player.flp=false
-    if player.wallsliding and player.falling then 
-      if  btn(➡️) or btn(⬅️) then 
-      gravity=.03
-  else
-    gravity=.3
+    player.dx += player.acc
+    player.running = true
+    player.flp = false
+    if player.wallsliding and player.falling then
+      if btn(➡️) or btn(⬅️) then
+        gravity = .03
+      else
+        gravity = .3
       end
-      
-  end
+    end
   end
 
   --slide
   if player.running
-  and not btn(⬅️)
-  and not btn(➡️)
-  and not player.falling
-  and not player.jumping then
-    player.running=false
-    player.sliding=true
+      and not btn(⬅️)
+      and not btn(➡️)
+      and not player.falling
+      and not player.jumping then
+    player.running = false
+    player.sliding = true
   end
 
   --jump
-  if btnp(❎) then 
-  if player.landed or player.wallsliding then
-    player.dy-=player.boost
-    player.landed=false
-    player.wallsliding=false
-    gravity=.3
-  end
+  if btnp(❎) then
+    if player.landed or player.wallsliding then
+      player.dy -= player.boost
+      player.landed = false
+      player.wallsliding = false
+      gravity = .3
+    end
   end
 
   --check collision up and down
-  if player.dy>0 then
-    player.falling=true
-    player.landed=false
-    player.jumping=false
+  if player.dy > 0 then
+    player.falling = true
+    player.landed = false
+    player.jumping = false
 
-    player.dy=limit_speed(player.dy,player.max_dy)
+    player.dy = limit_speed(player.dy, player.max_dy)
 
-    if collide_map(player,"down",0) then
-      player.landed=true
-      gravity=.3
-      player.falling=false
-      player.dy=0
-      player.y-=((player.y+player.h+1)%8)-1
-      player.wallsliding=false
-
+    if collide_map(player, "down", 0) then
+      player.landed = true
+      gravity = .3
+      player.falling = false
+      player.dy = 0
+      player.y -= (player.y + player.h + 1) % 8 - 1
+      player.wallsliding = false
     end
-  elseif player.dy<0 then
-    player.jumping=true
-    if collide_map(player,"up",1) then
-      player.dy=0
+  elseif player.dy < 0 then
+    player.jumping = true
+    if collide_map(player, "up", 1) then
+      player.dy = 0
     end
   end
 
   --check collision left and right
-  if player.dx<0 then
+  if player.dx < 0 then
+    player.dx = limit_speed(player.dx, player.max_dx)
 
-    player.dx=limit_speed(player.dx,player.max_dx)
-
-    if collide_map(player,"left",1) then
-      player.dx=0
+    if collide_map(player, "left", 1) then
+      player.dx = 0
     end
-  elseif player.dx>0 then
+  elseif player.dx > 0 then
+    player.dx = limit_speed(player.dx, player.max_dx)
 
-    player.dx=limit_speed(player.dx,player.max_dx)
-
-    if collide_map(player,"right",1) then
-      player.dx=0
+    if collide_map(player, "right", 1) then
+      player.dx = 0
     end
   end
 
   --stop sliding
   if player.sliding then
-    if abs(player.dx)<.2
-    or player.running then
-      player.dx=0
-      player.sliding=false
+    if abs(player.dx) < .2
+        or player.running then
+      player.dx = 0
+      player.sliding = false
     end
   end
 
-  player.x+=player.dx
-  player.y+=player.dy
+  player.x += player.dx
+  player.y += player.dy
 
   --limit player to map
-  if player.x<map_start then
-    player.x=map_start
-
+  if player.x < map_start then
+    player.x = map_start
   end
-  if player.x>map_end-player.w then
-    player.x=map_end-player.w
+  if player.x > map_end - player.w then
+    player.x = map_end - player.w
   end
---wall sliding collision detection
-if collide_map(player,"left",3) and btn(⬅️) then
-  if player.jumping then 
-    player.dy=0
-
-  end 
-  if player.flp and player.falling then 
-    player.flp=false
+  --wall sliding collision detection
+  if collide_map(player, "left", 3) and btn(⬅️) then
+    if player.jumping then
+      player.dy = 0
+    end
+    if player.flp and player.falling then
+      player.flp = false
+    end
+    player.wallsliding = true
   end
-    player.wallsliding=true
+  if collide_map(player, "right", 3) and btn(➡️) then
+    if player.jumping then
+      player.dy = 0
+    end
+    if not player.flp and player.falling then
+      player.flp = true
+    end
+    player.wallsliding = true
+  end
 end
-if collide_map(player,"right",3) and btn(➡️) then
-  if player.jumping then 
-    player.dy=0
-
-  end 
-  if not player.flp and player.falling then 
-    player.flp=true
-  end
-  player.wallsliding=true
-
-end
-
-
-end
-
 
 function player_animate()
   if player.jumping then
-    player.sp=7
+    player.sp = 7
   elseif player.frontface then
-  player.sp=11
+    player.sp = 11
   elseif player.falling then
-    if (player.wallsliding) then
-      gravity=.05
-      player.sp=10
-      else
-        player.sp=8
+    if player.wallsliding then
+      gravity = .05
+      player.sp = 10
+    else
+      player.sp = 8
     end
   elseif player.sliding then
-    player.sp=9
+    player.sp = 9
   elseif player.running then
-    if time()-player.anim>.1 then
-      player.anim=time()
-      player.sp+=1
-      if player.sp>6 then
-        player.sp=3
+    if time() - player.anim > .1 then
+      player.anim = time()
+      player.sp += 1
+      if player.sp > 6 then
+        player.sp = 3
       end
     end
-  else --player idle
-    if time()-player.anim>.3 then
-      player.anim=time()
-      player.sp+=1
-      if player.sp>2 then
-        player.sp=1
+  else
+    --player idle
+    if time() - player.anim > .3 then
+      player.anim = time()
+      player.sp += 1
+      if player.sp > 2 then
+        player.sp = 1
       end
     end
   end
-
 end
 
-function limit_speed(num,maximum)
-  return mid(-maximum,num,maximum)
+function limit_speed(num, maximum)
+  return mid(-maximum, num, maximum)
 end
 -->8
 --projectiles
 
 function ibullets()
-			buls={}
-end 
+  buls = {}
+end
 
 --getting
 
 function ubullets()
-	player.ninjastarstatus+=1
-		for e in  all(buls) do 
-				e.x+=e.spd
-				e.distance+=e.spd
+  player.ninjastarstatus += 1
+  for e in all(buls) do
+    e.x += e.spd
+    e.distance += e.spd
 
     --animate sprite
-      if e.distance%2==0  then 
-        e.sprite=13
-      else
-        e.sprite=14
+    if e.distance % 2 == 0 then
+      e.sprite = 13
+    else
+      e.sprite = 14
+    end
+    --animate end of distance
 
-      end 
-  --animate end of distance
-
-		if e.distance==18 or e.distance<(-18)  then 
-		      e.sprite=15
-		end 
+    if e.distance == 18 or e.distance < -18 then
+      e.sprite = 15
+    end
     --delete bullet
-			if e.distance>21 or e.distance<(-21)then 
-		del(buls,e)
-		end
-		end
- 
+    if e.distance > 21 or e.distance < -21 then
+      del(buls, e)
+    end
+  end
 end
 --draw projectilces
 function dbullets()
-		for e in all(buls) do 
-		spr(e.sprite,e.x,e.y)
-		end
+  for e in all(buls) do
+    spr(e.sprite, e.x, e.y)
+  end
 end
 
 function shoot()
-		player.sp=16
-		player.sp=16
+  player.sp = 16
+  player.sp = 16
 
-  player.ninjastarstatus=0
-		if player.flp then 
-			aim=-1
-			else 
-			aim=1
-			end
+  player.ninjastarstatus = 0
+  if player.flp then
+    aim = -1
+  else
+    aim = 1
+  end
 
-add(buls,{
-		x=player.x+(3)*aim,
-		y=player.y,
-		spd=player.dx+1*(aim),
-		distance=0,
-		sprite=13,
-		collision=false
-		
-		}
-)
+  add(
+    buls, {
+      x = player.x + 3 * aim,
+      y = player.y,
+      spd = player.dx + 1 * aim,
+      distance = 0,
+      sprite = 13,
+      collision = false
+    }
+  )
 end
 -->8
 --npc handling
 function ioldman()
-				oldman= {
-				sp=18,
-				x=50,
-				y=40,
-				w=8,
-        h=8,
-        flp=false,
-        sx=0,
-        dx=0,
-        dy=0,
-        max_dx=2,
-        max_dy=3,
-        acc=0.5,
-        boost=4,
-        anim=0,
-        running=false,
-        jumping=false,
-        falling=false,
-        sliding=false,
-        landed=false
-			
-      }
+  oldman = {
+    sp = 18,
+    x = 50,
+    y = 40,
+    w = 8,
+    h = 8,
+    flp = false,
+    sx = 0,
+    dx = 0,
+    dy = 0,
+    max_dx = 2,
+    max_dy = 3,
+    acc = 0.5,
+    boost = 4,
+    anim = 0,
+    running = false,
+    jumping = false,
+    falling = false,
+    sliding = false,
+    landed = false,
+    done = 0
+  }
 end
 
 function voldman()
-  oldman.dy+=gravity
-  oldman.dx*=friction
+  oldman.dy += gravity
+  oldman.dx *= friction
 
-  
-  if oldman.dy>0 then
-    oldman.falling=true
-    oldman.landed=false
-    oldman.jumping=false
-  
-    oldman.dy=limit_speed(oldman.dy,oldman.max_dy)
-  
-    if collide_map(oldman,"down",0) then
-      oldman.landed=true
-      oldman.falling=false
-      oldman.dy=0
-      oldman.y-=((oldman.y+oldman.h+1)%8)-1
-      oldman.wallsliding=false
-  
+  if oldman.dy > 0 then
+    oldman.falling = true
+    oldman.landed = false
+    oldman.jumping = false
+
+    oldman.dy = limit_speed(oldman.dy, oldman.max_dy)
+
+    if collide_map(oldman, "down", 0) then
+      oldman.landed = true
+      oldman.falling = false
+      oldman.dy = 0
+      oldman.y -= (oldman.y + oldman.h + 1) % 8 - 1
+      oldman.wallsliding = false
     end
-  elseif oldman.dy<0 then
-    oldman.jumping=true
-    if collide_map(oldman,"up",1) then
-      oldman.dy=0
+  elseif oldman.dy < 0 then
+    oldman.jumping = true
+    if collide_map(oldman, "up", 1) then
+      oldman.dy = 0
     end
   end
-  oldman.x+=oldman.dx
-  oldman.y+=oldman.dy
-
-
-  
+  oldman.x += oldman.dx
+  oldman.y += oldman.dy
 end
 
-ninjastarstatus=8
+ninjastarstatus = 8
 
 function animate_oldman()
- 
-  for i=1,10,1
-  do
-  if not collide_map(oldman,"right",3) then 
-      oldman.running=true
-      oldman.x+=.08
-      oldman.sx+=1
-    if oldman.sx>2 then 
-      oldman.sx=0
-    end 
-    oldman.sp=19+oldman.sx
-      end  
-   end     
+  direction = 1
+  for i = 1, 10, 1 do
+    if not collide_map(oldman, "right", 3) and oldman.done == 0 then
+      oldman.running = true
+      oldman.x += .08 * direction
+      oldman.sx += 1
+      if oldman.sx > 2 then
+        oldman.sx = 0
+      end
+      oldman.sp = 19 + oldman.sx
+    else
+      oldman.done = 1
+    end
+    if oldman.done == 1 then
+      -- done=1
+      oldman.y -= .05
+      oldman.done = 2
+    end
+    if oldman.done == 2 then
+        oldman.flp = true
+        direction = -1
+        oldman.x += .05*direction
+      
+    end
+  end
 end
 
 function doldman()
-spr(oldman.sp,oldman.x,oldman.y)
-animate_oldman()
+  spr(oldman.sp, oldman.x, oldman.y, 1, 1, oldman.flp)
+  animate_oldman()
 end
-
-
 
 __gfx__
 00000000004444400044444000044444000444440004444400044444c0044444c004444400000000044444000044444000000050000000000000000000000000
