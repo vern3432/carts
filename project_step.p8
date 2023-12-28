@@ -145,37 +145,33 @@ function player_update()
 
   --up button code
   --⬆️
-
   if btn(⬆️) then
-
-    player.frontface = true
-    --
-    if player.playerIn == false then
-      if player.timesup == 0 and collide_map(player, "right", 7) or collide_map(player, "left", 7) or collide_map(player, "up", 7) then
-        player.playerIn = true
-        player.x = 330
-        player.y = 500
-      end
-    elseif player.playerIn == true then
-      if player.timesup == 0 and collide_map(player, "right", 7) or collide_map(player, "left", 7) or collide_map(player, "up", 7) then
-        player.playerIn = false
-        player.x = 199
-        player.y = 30
-      end
+    if not player.playerIn then
+        -- If player is outside, teleport inside if conditions are met
+        if player.timesup == 0 and (collide_map(player, "right", 7) or collide_map(player, "left", 7) or collide_map(player, "up", 7)) then
+            player.playerIn = true
+            player.x = 330
+            player.y = 500
+        end
+    elseif player.playerIn then
+        -- If player is inside, teleport outside if conditions are met
+        if player.timesup == 0 and (collide_map(player, "right", 7) or collide_map(player, "left", 7) or collide_map(player, "up", 7)) then
+            player.playerIn = false
+            player.x = 199
+            player.y = 30
+        end
     end
-  end
-  if not btn(⬆️) then
-    for i = 1, 10, 1 do
-      player.timesup +=1
-    end
-    if player.timesup then 
-     if  player.timesup >= 700 then 
-      player.timesup = 0
-     end 
-    end 
-    player.frontface = false
-  end
+end
 
+if not btn(⬆️) then
+  player.timesup = min(player.timesup + 1, 700)
+else
+  -- Reset timesup when the up button is pressed again
+  player.timesup = 0
+end
+
+-- Update player frontface status
+player.frontface = btn(⬆️)
   if btn(⬅️) then
     player.dx -= player.acc
     player.running = true
