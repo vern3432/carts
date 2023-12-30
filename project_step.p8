@@ -73,7 +73,8 @@ function _draw()
   dbullets()
   doldman()
   if player.showSymbol then
-    spr("/148", player.x, player.y - 8 + player.symbolOffset)  -- Assuming sprite index 47 is the up symbol
+        print("⬆️", player.x, player.y - 8 + player.symbolOffset, 15) -- Display the up arrow character
+    -- spr("/148", player.x, player.y - 8 + player.symbolOffset)  -- Assuming sprite index 47 is the up symbol
 end
 end
 
