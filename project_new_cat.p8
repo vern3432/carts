@@ -150,17 +150,13 @@ function player_update()
 
   if btn(⬇️) then
     if not cat.summoned then 
-    if player.flp then 
-      direction = -1 
-    else 
-      direction = 1 
-    end 
-    cat.x=player.x+(1*direction)
-    cat.y=player.y
-    cat.summoned=true
+      cat.flp = player.flp -- Set cat's flip based on player's flip
+      cat.direction = player.flp and -1 or 1 -- Set cat's direction based on player's flip, flipped direction is -1
+      cat.x = player.x + (1 * cat.direction)
+      cat.y = player.y
+      cat.summoned = true
     end 
   end
-
   --up button code
   --⬆️
   if btn(⬆️) then
@@ -475,7 +471,8 @@ function iCatproj()
     falling = false,
     sliding = false,
     landed = false,
-    done = 0
+    done = 0,
+    direction=1
   }
 end
 function vcat()
@@ -514,8 +511,8 @@ function dcat()
 end
 
 function animate_cat()
-  if not collide_map(cat, "right", 1) then 
-    cat.dx=.5
+  if not collide_map(cat, "right", 1) or not collide_map(cat, "left", 1)  then 
+    cat.dx=.5*cat.direction
     if cat.x%2==0 then 
       cat.sp=27
     else 
