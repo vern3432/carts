@@ -51,7 +51,7 @@ function _init()
   ioldman()
   iCatproj()
   ienemies()
-  -- enemyspawn("redclone", 53, 40, "enemy1")
+ enemyspawn("redclone", 53, 40, "enemy1")
 end
 
 -->8
@@ -189,16 +189,17 @@ function player_update()
   end
   --up button code
   --⬆️
+  --door logic
   if btn(⬆️) then
     if not player.playerIn then
       -- If player is outside, teleport inside if conditions are met
-      if player.timesup == 0 and (collide_map(player, "right", 7) or collide_map(player, "left", 7) or collide_map(player, "up", 7)) then
+      if player.timesup == 0 and player.x<300 and (collide_map(player, "right", 7) or collide_map(player, "left", 7) or collide_map(player, "up", 7)) then
         player.savedx = player.x
         player.savedy = player.y
         player.playerIn = true
         player.x = 300
         player.y = 500
-      elseif player.timesup == 0 and (collide_map(player, "right", 6) or collide_map(player, "left", 6) or collide_map(player, "up", 6)) then
+      elseif player.timesup == 0  and (collide_map(player, "right", 7) or collide_map(player, "left", 7) or collide_map(player, "up", 7)) then
         player.savedx = player.x
         player.savedy = player.y
         player.playerIn = true
@@ -523,8 +524,28 @@ function iCatproj()
     sliding = false,
     landed = false,
     done = 0,
-    direction = 1
+    direction = 1,
+    animation=0,
+    animation2=0
+
   }
+    catleft = {
+    x=cat.x+1,
+    y=cat.y+1,
+    w = 8,
+    h = 8
+
+
+  }
+  catright = {
+    x=cat.x+1,
+    y=cat.y+1,
+    w = 8,
+    h = 8
+
+
+  }
+  
 end
 function vcat()
   cat.dy += gravity
@@ -560,22 +581,66 @@ function dcat()
     animate_cat()
   end
 end
-
+--need to make it stop before instead of inside. have absolutly no clue
+--not collide_map(catleft, "right", 1) or not collide_map(catright, "left", 1) or not collide_map(catright, "right", 1) or not collide_map(catleft, "left", 1) 
 function animate_cat()
   if not collide_map(cat, "right", 1) or not collide_map(cat, "left", 1) then
-    cat.dx = .5 * cat.direction
-    if cat.x % 2 == 0 then
-      cat.sp = 27
-    else
-      cat.sp = 28
+    if cat.animation<4 then 
+      cat.animation+=1
+    else 
+      cat.animation=0
     end
+    if cat.animation>2 then 
+        cat.sp=28
+    else
+      cat.sp=27
+    end
+    cat.dx = .5 * cat.direction
+  
   else
     cat.dx = 0
-    cat.summoned = false
+    cat.animation2+=1
+    if cat.animation2%4==0then
+      cat.sp=29
+    else 
+      cat.sp=30
+    end 
+    
+    if cat.animation2>16 then 
+          cat.summoned = false
+          cat.animation=0
+          cat.animation2=0
+    end 
   end
+
   cat.x += cat.dx
 end
 
+-- if cat.animation<4 then 
+--   cat.animation+=1
+-- else 
+--   cat.animation=0
+-- end
+-- if cat.animation>2 then 
+--     cat.sp=28
+-- else
+--   cat.sp=27
+-- end
+-- cat.dx = .5 * cat.direction
+
+-- else
+-- cat.dx = 0
+-- cat.animation=0
+-- cat.animation+=1
+-- if cat.canimation%2 then 
+--   cat.sp=29
+-- else 
+--   cat.sp=29
+-- end
+-- if cat.animation>6 then 
+-- cat.summoned = false
+-- end 
+-- cat.x += cat.dx
 --old man stuff
 
 function voldman()
@@ -789,7 +854,7 @@ __gfx__
 0000000000c0050000c005000000500000c500000000c000005c00000dc00000000000cd0000ccdd0c00000000500c0050000000000000000000000000000000
 00444440444440000066600000006660000066600000666000666000444440004444406b0000d0d00008d0d00000d0d00088d0d00d0d00000d0d000080808000
 00ccccc0ccccc0000644440000064444000644440006444406444400ccccc00bccccc00b70008888070088887000888870008888088880000888800000000800
-0cf72f20f72f20000640400000064040000640400006404006404000f72f20b3f72f20b30d08d1d1d000d1d10d88dd1d0d00dd1d8dd1d0008dd1d00000505080
+0cf72f20f72f20000640400000064040000640400006404006404000f72f20b3f72f20b30d08d1d1d000d1d10d88dd1dd000dd1d8dd1d0008dd1d00000505080
 c0fffef0fffef0090446660004044666000446660004466604466600fffef00bfffef00bd000ddedd000ddedd000ddded000ddde0ddde0d70ddded7000080008
 000cc0cf0cc0c09855762650005576260455762600557626557626500cc0c0bb0cc0c06bddd5d777ddd5d777ddd5d777ddd5d7770d772dd00d772d0000505080
 0fcccc0000cc0988457767040005776700057767040577674577670400cc0bb300cc0bb30ddd55500ddd55500ddd55500ddd55500dddd0000dddd00000000800
@@ -908,7 +973,7 @@ bbbb33bbb33bbbbb4999949999994494bb334444444433bb66445464d655555d6554dd5501110100
 00000000004994000000000000000000000000000000000000000000252525252525252525252500000000000000000000276464646464646464646464643700
 0000000000499400000000000000000000000000000000000000000000000000000000000000000000000000000000a3b3c30000000000000000000000000000
 __gff__
-0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002020202020000000000000000000000001010101010103000b00004003400000000303030b0b00130b01010101010101030303030b0b00130300008080000000000000000b0b0b0b0000008080000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002323232323000000000000000000000001010101010103000b00008003800000000303030b0b00130b01010101010101030303030b0b00130300008080000000000000000b0b0b0b0000008080000000
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001010000000000000000000000000000000000000000000000000000000000000101010000000000000000000000000000000000000000000000000000000000
 __map__
 56560000560056005656005600005600005600560056005600565600005600000000000000005600005600000000560056560000000056005600005656c0c1c200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
