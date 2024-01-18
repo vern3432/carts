@@ -4,6 +4,7 @@ __lua__
 
 --variables--
 --comment added
+--need to add it so that the cat does not run inside of the blocks. Need to make differnt cats and a selector for that. 
 function _init()
   player = {
     sp = 1,
