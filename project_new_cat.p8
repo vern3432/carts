@@ -4,7 +4,7 @@ __lua__
 
 --variables--
 --comment added
---need to add it so that the cat does not run inside of the blocks. Need to make differnt cats and a selector for that. 
+--need to add it so that the cat does not run inside of the blocks. Need to make differnt cats and a selector for that.
 function _init()
   player = {
     sp = 1,
@@ -52,7 +52,7 @@ function _init()
   ioldman()
   iCatproj()
   ienemies()
- enemyspawn("redclone", 53, 40, "enemy1")
+  enemyspawn("redclone", 53, 40, "enemy1")
 end
 
 -->8
@@ -117,8 +117,15 @@ end
 function collide_map(obj, aim, flag)
   --obj = table needs x,y,w,h
   --aim = left,right,up,down
+  -- if obj == cat  and cat.flp then
+  --   local x=catleft.x
+  -- elseif obj==cat then 
+  --   local x = catright.x
+  -- else
+  -- end
 
   local x = obj.x
+
   local y = obj.y
   local w = obj.w
   local h = obj.h
@@ -194,13 +201,13 @@ function player_update()
   if btn(⬆️) then
     if not player.playerIn then
       -- If player is outside, teleport inside if conditions are met
-      if player.timesup == 0 and player.x<300 and (collide_map(player, "right", 7) or collide_map(player, "left", 7) or collide_map(player, "up", 7)) then
+      if player.timesup == 0 and player.x < 300 and (collide_map(player, "right", 7) or collide_map(player, "left", 7) or collide_map(player, "up", 7)) then
         player.savedx = player.x
         player.savedy = player.y
         player.playerIn = true
         player.x = 300
         player.y = 500
-      elseif player.timesup == 0  and (collide_map(player, "right", 7) or collide_map(player, "left", 7) or collide_map(player, "up", 7)) then
+      elseif player.timesup == 0 and (collide_map(player, "right", 7) or collide_map(player, "left", 7) or collide_map(player, "up", 7)) then
         player.savedx = player.x
         player.savedy = player.y
         player.playerIn = true
@@ -526,27 +533,21 @@ function iCatproj()
     landed = false,
     done = 0,
     direction = 1,
-    animation=0,
-    animation2=0
-
+    animation = 0,
+    animation2 = 0
   }
-    catleft = {
-    x=cat.x+1,
-    y=cat.y+1,
+  catleft = {
+    x = cat.x + 1,
+    y = cat.y + 1,
     w = 8,
     h = 8
-
-
   }
   catright = {
-    x=cat.x+1,
-    y=cat.y+1,
+    x = cat.x + 1,
+    y = cat.y + 1,
     w = 8,
     h = 8
-
-
   }
-  
 end
 function vcat()
   cat.dy += gravity
@@ -583,46 +584,44 @@ function dcat()
   end
 end
 --need to make it stop before instead of inside. have absolutly no clue
---not collide_map(catleft, "right", 1) or not collide_map(catright, "left", 1) or not collide_map(catright, "right", 1) or not collide_map(catleft, "left", 1) 
+--not collide_map(catleft, "right", 1) or not collide_map(catright, "left", 1) or not collide_map(catright, "right", 1) or not collide_map(catleft, "left", 1)
 function animate_cat()
   if not collide_map(cat, "right", 1) or not collide_map(cat, "left", 1) then
-    if cat.animation<4 then 
-      cat.animation+=1
-    else 
-      cat.animation=0
-    end
-    if cat.animation>2 then 
-        cat.sp=28
+    if cat.animation < 4 then
+      cat.animation += 1
     else
-      cat.sp=27
+      cat.animation = 0
+    end
+    if cat.animation > 2 then
+      cat.sp = 28
+    else
+      cat.sp = 27
     end
     cat.dx = .5 * cat.direction
-  
   else
     cat.dx = 0
-    cat.animation2+=1
-    if cat.animation2%4==0then
-      cat.sp=29
-    else 
-      cat.sp=30
-    end 
-    
-    if cat.animation2>16 then 
-          cat.summoned = false
-          cat.animation=0
-          cat.animation2=0
-    end 
+    cat.animation2 += 1
+    if cat.animation2 % 4 == 0 then
+      cat.sp = 29
+    else
+      cat.sp = 30
+    end
+    if cat.animation2 > 16 then
+      cat.summoned = false
+      cat.animation = 0
+      cat.animation2 = 0
+    end
   end
 
   cat.x += cat.dx
 end
 
--- if cat.animation<4 then 
+-- if cat.animation<4 then
 --   cat.animation+=1
--- else 
+-- else
 --   cat.animation=0
 -- end
--- if cat.animation>2 then 
+-- if cat.animation>2 then
 --     cat.sp=28
 -- else
 --   cat.sp=27
@@ -633,14 +632,14 @@ end
 -- cat.dx = 0
 -- cat.animation=0
 -- cat.animation+=1
--- if cat.canimation%2 then 
+-- if cat.canimation%2 then
 --   cat.sp=29
--- else 
+-- else
 --   cat.sp=29
 -- end
--- if cat.animation>6 then 
+-- if cat.animation>6 then
 -- cat.summoned = false
--- end 
+-- end
 -- cat.x += cat.dx
 --old man stuff
 
